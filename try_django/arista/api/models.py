@@ -34,13 +34,13 @@ class Group_User(models.Model):
     def __str__(self):
         return str(self.group) + ", " + str(self.user)
 
-# class Friends(models.Model):
-#     group = models.ForeignKey('Group', on_delete = models.CASCADE, primary_key = True)
-#     user1 = models.ForeignKey('User', related_name = "User1", on_delete = models.CASCADE)
-#     user2 = models.ForeignKey('User', related_name = "User2", on_delete = models.CASCADE)
+class Friends(models.Model):
+    group = models.ForeignKey('Group', on_delete = models.CASCADE, primary_key = True)
+    user1 = models.ForeignKey('User', related_name = "User1", on_delete = models.CASCADE)
+    user2 = models.ForeignKey('User', related_name = "User2", on_delete = models.CASCADE)
 
-#     def __str__(self):
-#         return str(self.user1) + ", " + str(self.user2)
+    def __str__(self):
+        return str(self.user1) + ", " + str(self.user2)
 
 class Payment_Whole(models.Model):
     payment_id = models.AutoField(primary_key = True)
