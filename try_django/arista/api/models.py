@@ -1,18 +1,39 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # TO-FIX: on_delete = models.CASCADE everywhere for now
 
-class User(models.Model):
-    user_name = models.CharField(max_length=16)
-    password = models.CharField(max_length=16)
-    name = models.CharField(max_length=32)
-    email = models.CharField(max_length=32)
+# class User(models.Model):
+#     user_name = models.CharField(max_length=16)
+#     password = models.CharField(max_length=16)
+#     name = models.CharField(max_length=32)
+#     email = models.CharField(max_length=32)
+#     phone_number = models.CharField(max_length=10)
+#     category = models.CharField(max_length=1)
+
+#     def __str__(self):
+#         return self.user_name
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=64)
     phone_number = models.CharField(max_length=10)
     category = models.CharField(max_length=1)
 
     def __str__(self):
-        return self.user_name
+        return str(self.user)
+
+    # The following signals are used so our Profile model will be automatically created/updated when we create/update User instances.
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
 
 
 class Group(models.Model):
@@ -24,7 +45,7 @@ class Group(models.Model):
 
 
 class Group_User(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
 
     class Meta:
@@ -34,10 +55,10 @@ class Group_User(models.Model):
         return str(self.group) + ", " + str(self.user)
 
 
-class Friends(models.Model):
+class Friend(models.Model):
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
-    user1 = models.ForeignKey('User', related_name="User1", on_delete=models.CASCADE)
-    user2 = models.ForeignKey('User', related_name="User2", on_delete=models.CASCADE)
+    user1 = models.ForeignKey(User, related_name="User1", on_delete=models.CASCADE)
+    user2 = models.ForeignKey(User, related_name="User2", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.user1) + ", " + str(self.user2)
@@ -55,7 +76,7 @@ class Payment_Whole(models.Model):
 
 class Payment_Individual(models.Model):
     payment = models.ForeignKey('Payment_Whole', on_delete=models.CASCADE)
-    lender = models.ForeignKey('User', on_delete=models.CASCADE)
+    lender = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.FloatField()
 
     class Meta:
@@ -67,8 +88,8 @@ class Payment_Individual(models.Model):
 
 class Transaction(models.Model):
     payment = models.ForeignKey('Payment_Whole', on_delete=models.CASCADE)
-    lender = models.ForeignKey('User', related_name="Lender", on_delete=models.CASCADE)
-    borrower = models.ForeignKey('User', related_name="Borrower", on_delete=models.CASCADE)
+    lender = models.ForeignKey(User, related_name="Lender", on_delete=models.CASCADE)
+    borrower = models.ForeignKey(User, related_name="Borrower", on_delete=models.CASCADE)
     amount = models.FloatField()
 
     def __str__(self):
