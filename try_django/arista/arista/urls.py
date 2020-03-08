@@ -19,6 +19,6 @@ from api.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/UserList', UserList.as_view()),
-    path('api/GroupList', GroupList.as_view()),
+    path('login/', Login.as_view()),
+    path('abc/', UserList.as_view()),
 ]
