@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import login, logout, authenticate
+from django.views.decorators.csrf import csrf_exempt
 
 
 class UserList(APIView):
@@ -26,7 +27,6 @@ class Account(APIView):
 
     @staticmethod
     def get(request):
-
         action = request.data.get('type')
 
         if action == 'login':
@@ -48,9 +48,12 @@ class Account(APIView):
             logout(request)
             return Response("Successfully logged out")
 
+        else:
+            return Response("Welcome to the API")
+
     @staticmethod
     def post(request):
-
+        print("hello")
         username = request.data.get('username')
         password = request.data.get('password')
         email = request.data.get('email')
@@ -60,7 +63,7 @@ class Account(APIView):
 
         print(username, password, email, name, phone_number, category)
 
-        user = User(username=username, password=password, password2=password, email=email)
+        user = User(username=username, password=password, email=email)
 
         user.save()
 
