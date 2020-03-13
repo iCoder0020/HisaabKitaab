@@ -3,18 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 # TO-FIX: on_delete = models.CASCADE everywhere for now
-
-# class User(models.Model):
-#     user_name = models.CharField(max_length=16)
-#     password = models.CharField(max_length=16)
-#     name = models.CharField(max_length=32)
-#     email = models.CharField(max_length=32)
-#     phone_number = models.CharField(max_length=10)
-#     category = models.CharField(max_length=1)
-
-#     def __str__(self):
-#         return self.user_name
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -25,7 +15,8 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user)
 
-    # The following signals are used so our Profile model will be automatically created/updated when we create/update User instances.
+    # The following signals are used so our Profile model will be automatically created/updated when we create/update
+    # User instances.
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:

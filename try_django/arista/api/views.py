@@ -1,46 +1,72 @@
-from api.models import *
 from api.serializers import *
-from django.contrib.auth.models import User
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import login, logout, authenticate
 
-# '''
+
 class UserList(APIView):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-# '''
 
 
-class Login(APIView):
+class Account(APIView):
+
     @staticmethod
     def get(request):
 
-        x = request.data.get('user_name')
-        y = request.data.get('password')
-        print(x, y)
-        if x is None:
-            return Response('Bye')
-        user = User.objects.get(user_name = x)
+        action = request.data.get('type')
 
-        serializer = UserSerializer(user)
-        if user.password != y:
-            return Response(serializer.data)
-        else:
-            return Response(serializer.data)
+        if action == 'login':
+            username = request.data.get('username')
+            password = request.data.get('password')
 
-    def post(self, request):
-        pass
+            if username is None or password is None:
+                return Response("Missing Credentials")
 
+            user = authenticate(username=username, password=password)
+
+            if user is None:
+                return Response("Wrong Credentials")
+            else:
+                login(request, user)
+                return Response("Welcome " + str(user.first_name))
+
+        if action == 'logout':
+            logout(request)
+            return Response("Successfully logged out")
+
+    @staticmethod
+    def post(request):
+
+        username = request.data.get('username')
+        password = request.data.get('password')
+        email = request.data.get('email')
+        name = request.data.get('name')
+        phone_number = request.data.get('phone_number')
+        category = request.data.get('category')
+
+        print(username, password, email, name, phone_number, category)
+
+        user = User(username=username, password=password, password2=password, email=email)
+
+        user.save()
+
+        profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
+
+        # profile.save()
+
+        return Response("Account created")
 
