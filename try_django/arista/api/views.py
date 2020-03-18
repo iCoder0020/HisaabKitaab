@@ -1,26 +1,7 @@
 from api.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth import login, logout, authenticate
-from django.views.decorators.csrf import csrf_exempt
-
-
-class UserList(APIView):
-
-    @staticmethod
-    def get(request):
-        profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
-
-    @staticmethod
-    def post(request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class Account(APIView):
@@ -44,32 +25,52 @@ class Account(APIView):
                 login(request, user)
                 return Response("Welcome " + str(user.first_name))
 
-        if action == 'logout':
+        elif action == 'logout':
             logout(request)
             return Response("Successfully logged out")
 
         else:
-            return Response("Welcome to the API")
+            return Response("invalid get type in Account")
 
     @staticmethod
     def post(request):
-        print("hello")
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
-        name = request.data.get('name')
-        phone_number = request.data.get('phone_number')
-        category = request.data.get('category')
+        action = request.data.get('type')
 
-        print(username, password, email, name, phone_number, category)
+        if action == 'create':
 
-        user = User(username=username, password=password, email=email)
+            username = request.data.get('username')
+            password = request.data.get('password')
+            email = request.data.get('email')
+            name = request.data.get('name')
+            phone_number = request.data.get('phone_number')
+            category = request.data.get('category')
 
-        user.save()
+            username_already_used = User.objects.filter(username=username).exists()
+            if username_already_used:
+                return Response("Username already is use")
 
-        profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
+            email_already_used = User.objects.filter(email=email).exists()
+            if email_already_used:
+                return Response("Email already in use")
 
-        # profile.save()
+            # ensure email is in goa.bits-pilani.ac.in domain
 
-        return Response("Account created")
+            user = User.objects.create_user(username=username, password=password, email=email)
 
+            profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
+            profile.save()
+
+            return Response("Account created")
+
+        elif action == 'delete':
+
+            username = request.data.get('username')
+
+            user = User.objects.get(username=username)
+            user.delete()
+
+            return Response("Account deleted")
+
+        else:
+
+            return Response("invalid get type in Account")

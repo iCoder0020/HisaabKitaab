@@ -7,7 +7,7 @@ from django.dispatch import receiver
 # TO-FIX: on_delete = models.CASCADE everywhere for now
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     name = models.CharField(max_length=64)
     phone_number = models.CharField(max_length=10)
     category = models.CharField(max_length=1)
@@ -30,6 +30,11 @@ class Profile(models.Model):
 class Group(models.Model):
     group_name = models.CharField(max_length=16)
     simplified = models.BooleanField(default=False)
+
+    @classmethod
+    def create(cls, group_name, simplified):
+        group = cls(group_name=group_name, simplified=simplified)
+        return group
 
     def __str__(self):
         return self.group_name
