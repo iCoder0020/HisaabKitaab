@@ -1,0 +1,31 @@
+use POSTMAN; put all (key,value) pairs in the 'Body' tab
+
+
+http://127.0.0.1:8000/account/	[AccountView]
+1.	Login [GET]
+	'login', username, password
+
+2.	Logout [GET]
+	'logout'
+
+3.	Create Account [POST]
+	'create', username, password, email, name, phone_number, category
+
+4.	Delete Account [POST]
+	'delete', username
+
+
+http://127.0.0.1:8000/group/	[GroupView]
+1.	Group Name [GET]
+	'groupname', groupid
+
+2.	Find user's groups [GET]
+	'grouplist', userid
+
+3.	List Group Members [GET]
+	'groupmembers', groupid 
+
+
+http://127.0.0.1:8000/user/		[UserView]
+1.	User Name [GET]
+	'username', userid

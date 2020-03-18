@@ -31,11 +31,6 @@ class Group(models.Model):
     group_name = models.CharField(max_length=16)
     simplified = models.BooleanField(default=False)
 
-    @classmethod
-    def create(cls, group_name, simplified):
-        group = cls(group_name=group_name, simplified=simplified)
-        return group
-
     def __str__(self):
         return self.group_name
 

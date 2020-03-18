@@ -2,9 +2,10 @@ from api.serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import login, logout, authenticate
+import json
 
 
-class Account(APIView):
+class AccountView(APIView):
 
     @staticmethod
     def get(request):
@@ -30,14 +31,13 @@ class Account(APIView):
             return Response("Successfully logged out")
 
         else:
-            return Response("invalid get type in Account")
+            return Response("invalid get in AccountView")
 
     @staticmethod
     def post(request):
         action = request.data.get('type')
 
         if action == 'create':
-
             username = request.data.get('username')
             password = request.data.get('password')
             email = request.data.get('email')
@@ -63,7 +63,6 @@ class Account(APIView):
             return Response("Account created")
 
         elif action == 'delete':
-
             username = request.data.get('username')
 
             user = User.objects.get(username=username)
@@ -72,5 +71,70 @@ class Account(APIView):
             return Response("Account deleted")
 
         else:
+            return Response("invalid post in AccountView")
 
-            return Response("invalid get type in Account")
+
+class GroupView(APIView):
+
+    @staticmethod
+    def get(request):
+        action = request.data.get('type')
+
+        if action == 'groupname':
+            groupid = request.data.get('groupid')
+
+            group = Group.objects.get(pk=groupid)
+
+            return Response(str(group))
+
+        elif action == 'grouplist':
+            userid = request.data.get('userid')
+
+            user = User.objects.get(pk=userid)
+            group_user = Group_User.objects.filter(user=user)
+
+            serializer = Group_UserSerializer(group_user, many=True)
+
+            return Response(serializer.data)
+
+            # grouplist = [str(g.group) for g in group_user]
+            # grouplist_as_json = json.dumps(grouplist)
+            # return Response(grouplist_as_json)
+
+        elif action == 'groupmembers':
+            groupid = request.data.get('groupid')
+
+            group = Group.objects.get(pk=groupid)
+            group_user = Group_User.objects.filter(group=group)
+
+            serializer = Group_UserSerializer(group_user, many=True)
+
+            return Response(serializer.data)
+
+        else:
+            return Response('invalid get in GroupView')
+
+    @staticmethod
+    def put(request):
+        action = request.data.get('type')
+
+
+class UserView(APIView):
+
+    @staticmethod
+    def get(request):
+        action = request.data.get('type')
+
+        if action == 'username':
+            userid = request.data.get('userid')
+
+            user = User.objects.get(pk=userid)
+
+            return Response(str(user))
+
+        else:
+            return Response('invalid get in UserView')
+
+    @staticmethod
+    def put(request):
+        action = request.data.get('type')
