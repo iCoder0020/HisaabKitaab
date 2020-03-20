@@ -22,4 +22,7 @@ urlpatterns = [
     path('account/', AccountView.as_view()),
     path('group/', GroupView.as_view()),
     path('user/', UserView.as_view()),
+    path('friend/', FriendView.as_view()),
+    path('payment/', PaymentView.as_view()),
+
 ]

@@ -2,30 +2,66 @@ use POSTMAN; put all (key,value) pairs in the 'Body' tab
 
 
 http://127.0.0.1:8000/account/	[AccountView]
-1.	Login [GET]
+
+Login [GET]
 	'login', username, password
 
-2.	Logout [GET]
+Logout [GET]
 	'logout'
 
-3.	Create Account [POST]
+Create Account [POST]
 	'create', username, password, email, name, phone_number, category
 
-4.	Delete Account [POST]
+Delete Account [POST]
 	'delete', username
 
 
 http://127.0.0.1:8000/group/	[GroupView]
-1.	Group Name [GET]
+
+Group Name [GET]
 	'groupname', groupid
 
-2.	Find user's groups [GET]
+Group ID [GET]
+	'groupid', groupname
+
+Find user's groups [GET]
 	'grouplist', userid
 
-3.	List Group Members [GET]
+List Group Members [GET]
 	'groupmembers', groupid 
+
+Create a new group [POST]
+	'create', userid, groupname
+
+Delete a group [POST]
+	'delete', groupid
+
+Add Member to Group [POST]
+	'addmember', groupid, userid
+
+Delete Member from Group [POST]
+	'deletemember', groupid, userid
 
 
 http://127.0.0.1:8000/user/		[UserView]
-1.	User Name [GET]
+
+User Name [GET]
 	'username', userid
+
+User ID [GET]
+	'userid', username
+
+
+http://127.0.0.1:8000/friend/	[FriendView]
+
+Friends List [GET]
+	'friendlist', userid
+
+
+http://127.0.0.1:8000/payment/	[PaymentView]
+	
+Create Payment_Whole [POST]
+	'create', groupid, description
+
+Add Payment_Individual [POST]
+	'add', userid, paymentid, amount
