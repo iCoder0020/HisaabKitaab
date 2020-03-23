@@ -1,10 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="ishan">
     <words>
+      <w>addmember</w>
+      <w>deletemember</w>
+      <w>friendlist</w>
       <w>groupid</w>
       <w>grouplist</w>
       <w>groupmembers</w>
       <w>groupname</w>
+      <w>paymentid</w>
       <w>userid</w>
     </words>
   </dictionary>

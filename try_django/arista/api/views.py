@@ -50,11 +50,11 @@ class AccountView(APIView):
 
             username_already_used = User.objects.filter(username=username).exists()
             if username_already_used:
-                return Response("Username already is use")
+                return Response("username already is use")
 
             email_already_used = User.objects.filter(email=email).exists()
             if email_already_used:
-                return Response("Email already in use")
+                return Response("email already in use")
 
             # ensure email is in goa.bits-pilani.ac.in domain
 
@@ -63,7 +63,7 @@ class AccountView(APIView):
             profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
             profile.save()
 
-            return Response("Account created")
+            return Response("Account created: " + username)
 
         elif action == 'delete':
             username = request.data.get('username')
@@ -71,7 +71,7 @@ class AccountView(APIView):
             user = User.objects.get(username=username)
             user.delete()
 
-            return Response("Account deleted")
+            return Response(username + " deleted")
 
         else:
             return Response("invalid post in AccountView")
@@ -90,6 +90,17 @@ class GroupView(APIView):
 
             return Response(str(group))
 
+        elif action == 'groupid':
+            groupname = request.data.get('groupname')
+
+            group = Group.objects.filter(group_name=groupname)
+
+            serializer = GroupSerializer(group, many=True)
+
+            groups = [serializer.data[i]['id'] for i in range(len(serializer.data))]
+
+            return Response(groups)
+
         elif action == 'grouplist':
             userid = request.data.get('userid')
             user = User.objects.get(pk=userid)
@@ -97,11 +108,9 @@ class GroupView(APIView):
 
             serializer = Group_UserSerializer(group_user, many=True)
 
-            return Response(serializer.data)
+            groups = [serializer.data[i]['group'] for i in range(len(serializer.data))]
 
-            # grouplist = [str(g.group) for g in group_user]
-            # grouplist_as_json = json.dumps(grouplist)
-            # return Response(grouplist_as_json)
+            return Response(groups)
 
         elif action == 'groupmembers':
             groupid = request.data.get('groupid')
@@ -111,14 +120,71 @@ class GroupView(APIView):
 
             serializer = Group_UserSerializer(group_user, many=True)
 
-            return Response(serializer.data)
+            users = [serializer.data[i]['user'] for i in range(len(serializer.data))]
+
+            return Response(users)
 
         else:
             return Response('invalid get in GroupView')
 
     @staticmethod
-    def put(request):
+    def post(request):
         action = request.data.get('type')
+
+        if action == 'create':
+            userid = request.data.get('userid')
+            groupname = request.data.get('groupname')
+
+            user = User.objects.get(pk=userid)
+            group = Group(group_name=groupname, simplified=False)
+
+            group.save()
+
+            group_user = Group_User(group=group, user=user)
+            group_user.save()
+
+            return Response(str(user) + " created " + str(group))
+
+        elif action == 'delete':
+            groupid = request.data.get('groupid')
+
+            group = Group.objects.get(pk=groupid)
+            groupname = group.group_name
+            group.delete()
+
+            return Response(groupname + " deleted")
+
+        elif action == 'addmember':
+            groupid = request.data.get('groupid')
+            userid = request.data.get('userid')
+
+            group = Group.objects.get(pk=groupid)
+            user = User.objects.get(pk=userid)
+
+            group_user = Group_User.objects.filter(group=group, user=user)
+
+            if group_user:
+                return Response('user already in group')
+
+            group_user = Group_User(group=group, user=user)
+            group_user.save()
+
+            return Response(str(user) + " added to " + str(group))
+
+        elif action == 'deletemember':
+            groupid = request.data.get('groupid')
+            userid = request.data.get('userid')
+
+            group = Group.objects.get(pk=groupid)
+            user = User.objects.get(pk=userid)
+
+            group_user = Group_User.objects.filter(group=group, user=user)
+            group_user.delete()
+
+            return Response(str(user) + " removed from " + str(group))
+
+        else:
+            return Response('invalid put in GroupView')
 
 
 class UserView(APIView):
@@ -134,9 +200,89 @@ class UserView(APIView):
 
             return Response(str(user))
 
+        elif action == 'userid':
+            username = request.data.get('username')
+
+            user_exists = User.objects.filter(username=username).exists()
+
+            if user_exists:
+                user = User.objects.get(username=username)
+                return Response(user.id)
+
+            return Response('invalid username')
+
         else:
             return Response('invalid get in UserView')
 
     @staticmethod
-    def put(request):
+    def post(request):
+        pass
+
+
+class FriendView(APIView):
+
+    @staticmethod
+    def get(request):
         action = request.data.get('type')
+
+        if action == 'friendlist':
+            userid = request.data.get('userid')
+
+            user = User.objects.get(pk=userid)
+            friend = Friend.objects.filter(user1=user) | Friend.objects.filter(user2=user)
+
+            serializer = FriendSerializer(friend, many=True)
+
+            friends = [serializer.data[i]['user1'] if serializer.data[i]['user1'] != int(userid)
+                       else serializer.data[i]['user2'] for i in range(len(serializer.data))]
+
+            return Response(friends)
+
+        else:
+            return Response('invalid get in FriendView')
+
+    @staticmethod
+    def post(request):
+        pass
+
+
+class PaymentView(APIView):
+
+    @staticmethod
+    def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
+        action = request.data.get('type')
+
+        if action == 'create':
+            groupid = request.data.get('groupid')
+            description = request.data.get('description')
+
+            group = Group.objects.get(pk=groupid)
+
+            payment_whole = Payment_Whole(group=group, amount=0, description=description)
+
+            payment_whole.save()
+
+            return Response("Created payment_whole: " + str(payment_whole))
+
+        elif action == 'add':
+            userid = request.data.get('userid')
+            paymentid = request.data.get('paymentid')
+            amount = request.data.get('amount')
+
+            user = User.objects.get(pk=userid)
+            payment_whole = Payment_Whole.objects.get(pk=paymentid)
+            payment_whole.amount += int(amount)
+
+            payment_individual = Payment_Individual(payment=payment_whole, lender=user, amount=amount)
+
+            payment_individual.save()
+            payment_whole.save()
+
+            return Response("Added payment_individual: " + str(payment_individual))
+
+        else:
+            return Response("invalid post in PaymentView")

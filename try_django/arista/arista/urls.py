@@ -24,4 +24,7 @@ urlpatterns = [
     path('group/', GroupView.as_view()),
     path('user/', UserView.as_view()),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+    path('friend/', FriendView.as_view()),
+    path('payment/', PaymentView.as_view()),
+
 ]

@@ -36,7 +36,7 @@ class Group(models.Model):
 
 
 class Group_User(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
 
     class Meta:
@@ -48,8 +48,8 @@ class Group_User(models.Model):
 
 class Friend(models.Model):
     group = models.ForeignKey('Group', on_delete=models.CASCADE)
-    user1 = models.ForeignKey(User, related_name="User1", on_delete=models.CASCADE)
-    user2 = models.ForeignKey(User, related_name="User2", on_delete=models.CASCADE)
+    user1 = models.ForeignKey(User, related_name="User1", on_delete=models.PROTECT)
+    user2 = models.ForeignKey(User, related_name="User2", on_delete=models.PROTECT)
 
     def __str__(self):
         return str(self.user1) + ", " + str(self.user2)
@@ -67,7 +67,7 @@ class Payment_Whole(models.Model):
 
 class Payment_Individual(models.Model):
     payment = models.ForeignKey('Payment_Whole', on_delete=models.CASCADE)
-    lender = models.ForeignKey(User, on_delete=models.CASCADE)
+    lender = models.ForeignKey(User, on_delete=models.PROTECT)
     amount = models.FloatField()
 
     class Meta:
@@ -79,8 +79,8 @@ class Payment_Individual(models.Model):
 
 class Transaction(models.Model):
     payment = models.ForeignKey('Payment_Whole', on_delete=models.CASCADE)
-    lender = models.ForeignKey(User, related_name="Lender", on_delete=models.CASCADE)
-    borrower = models.ForeignKey(User, related_name="Borrower", on_delete=models.CASCADE)
+    lender = models.ForeignKey(User, related_name="Lender", on_delete=models.PROTECT)
+    borrower = models.ForeignKey(User, related_name="Borrower", on_delete=models.PROTECT)
     amount = models.FloatField()
 
     def __str__(self):
