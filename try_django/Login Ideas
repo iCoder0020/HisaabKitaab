@@ -1,0 +1,13 @@
+For Authorization we can use the following header:
+Authorization: Token ae8712015e2b9f6535f94ba813828f468c97ad2e
+
+
+For getting the token:
+Login using POST at http://127.0.0.1:8000/api-token-auth/
+with Body having username and password
+
+https://simpleisbetterthancomplex.com/tutorial/2018/11/22/how-to-implement-token-authentication-using-django-rest-framework.html#implementing-the-token-authentication
+
+{
+    "token": "ae8712015e2b9f6535f94ba813828f468c97ad2e"
+}

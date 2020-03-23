@@ -24,7 +24,7 @@ class GroupSerializer(serializers.ModelSerializer):
 class Group_UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group_User
-        fields = '__all__'
+        fields = ['groupid']
 
 
 class FriendSerializer(serializers.ModelSerializer):

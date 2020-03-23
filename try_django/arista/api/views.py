@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import login, logout, authenticate
 import json
+from rest_framework.permissions import IsAuthenticated 
 
 
 class AccountView(APIView):
+
+    permission_classes = (IsAuthenticated,)
 
     @staticmethod
     def get(request):
@@ -89,7 +92,6 @@ class GroupView(APIView):
 
         elif action == 'grouplist':
             userid = request.data.get('userid')
-
             user = User.objects.get(pk=userid)
             group_user = Group_User.objects.filter(user=user)
 
@@ -123,7 +125,7 @@ class UserView(APIView):
 
     @staticmethod
     def get(request):
-        action = request.data.get('type')
+        action = request.data.get('type')   
 
         if action == 'username':
             userid = request.data.get('userid')
