@@ -1,14 +1,13 @@
 from api.serializers import *
 from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import login, logout, authenticate
 import json
-from rest_framework.permissions import IsAuthenticated 
+#from rest_framework.permissions import IsAuthenticated 
 
 
 class AccountView(APIView):
-
-    permission_classes = (IsAuthenticated,)
 
     @staticmethod
     def get(request):
@@ -38,32 +37,43 @@ class AccountView(APIView):
 
     @staticmethod
     def post(request):
+        print("Raw Data: ", request.body)
+
         action = request.data.get('type')
 
         if action == 'create':
+            # serializer = UserSerializer(data=request.data)
+            # if serializer.is_valid():
+            #     serializer.save()
+            #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
             username = request.data.get('username')
             password = request.data.get('password')
             email = request.data.get('email')
             name = request.data.get('name')
-            phone_number = request.data.get('phone_number')
             category = request.data.get('category')
-
-            username_already_used = User.objects.filter(username=username).exists()
-            if username_already_used:
-                return Response("username already is use")
 
             email_already_used = User.objects.filter(email=email).exists()
             if email_already_used:
-                return Response("email already in use")
+                print("email already in use")
+                return Response({'code': 400, 'message': "email already is use"}, status=status.HTTP_400_BAD_REQUEST)
+
+            username_already_used = User.objects.filter(username=username).exists()
+            if username_already_used:
+                print("username already in use")
+                return Response({'code': 400, 'message': "username already is use"}, status=status.HTTP_400_BAD_REQUEST)
 
             # ensure email is in goa.bits-pilani.ac.in domain
 
             user = User.objects.create_user(username=username, password=password, email=email)
 
-            profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
+            profile = Profile(user=user, name=name, category=category)
             profile.save()
 
-            return Response("Account created: " + username)
+            serializer = UserSerializer(user)
+            
+            return Response({'status':'account created'}, status=status.HTTP_201_CREATED)
 
         elif action == 'delete':
             username = request.data.get('username')
