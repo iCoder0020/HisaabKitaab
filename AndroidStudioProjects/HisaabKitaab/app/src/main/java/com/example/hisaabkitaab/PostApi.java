@@ -1,7 +1,10 @@
 package com.example.hisaabkitaab;
 
 import com.example.hisaabkitaab.model.Login;
+import com.example.hisaabkitaab.model.PostReply;
 import com.example.hisaabkitaab.model.User;
+import com.example.hisaabkitaab.model.Register;
+
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,11 +23,13 @@ public interface PostApi {
     String API_URL = root + "api/v1/";
 
 
+    //Login and get token
     @POST("api-token-auth/")
     Call<User> login(@Body Login login);
 
-//    @POST("register/")
-//    Call<User> registrationUser(@Body User userModel);
+    //Register
+    @POST("account/")
+    Call<PostReply> registrationUser(@Body Register register);
 
 //    @GET("post/list/")
 //    Call<List<PostModel>> getListPost();

@@ -23,6 +23,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import com.example.hisaabkitaab.model.Login;
 import com.example.hisaabkitaab.model.User;
+import com.google.gson.GsonBuilder;
 
 
 import retrofit2.Call;
@@ -44,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        preferences = new AppPreferences(this);
+//        preferences = new AppPreferences(this);
 //        if (preferences.isLoggedIn()) {
 //            startMainActivity();
 //            finish();
@@ -72,11 +73,16 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginClicked() {
         String username = textUsernameLayout.getEditText().getText().toString();
         String password = textPasswordLayout.getEditText().getText().toString();
+        boolean checks = true;
         if (username.isEmpty()) {
+            checks = false;
             textUsernameLayout.setError("Username must not be empty");
-        } else if (password.isEmpty()) {
+        }
+        if (password.isEmpty()) {
+            checks = false;
             textPasswordLayout.setError("Password must not be empty");
-        } else {
+        }
+        if(checks) {
             Log.v("click login", "entring tryLogin");
             tryLogin(username, password);
         }
@@ -127,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         String token = response.body().getToken();
@@ -160,7 +167,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        preferences.setLoggedIn(true);
+        // preferences.setLoggedIn(true);
 
         textPasswordLayout.setEnabled(false);
         textUsernameLayout.setEnabled(false);
@@ -175,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, com.example.hisaabkitaab.MainActivity.class);
         startActivity(intent);
     }
 
