@@ -5,20 +5,20 @@ public class User {
     private String email;
     private String username;
     private String password;
-    private String token;
+    private String auth_token;
 
 
     public User(int id,
                 String email,
                 String username,
                 String password,
-                String token
+                String auth_token
     ) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.token = token;
+        this.auth_token = auth_token;
     }
 
 
@@ -31,7 +31,7 @@ public class User {
     }
 
     public String getToken(){
-        return token;
+        return this.auth_token;
     }
 
 }

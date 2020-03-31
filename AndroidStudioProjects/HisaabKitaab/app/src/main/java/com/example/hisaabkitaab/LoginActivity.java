@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hisaabkitaab.model.LoginReply;
 import com.google.android.material.textfield.TextInputLayout;
 
 import com.example.hisaabkitaab.model.Login;
@@ -26,6 +27,9 @@ import com.example.hisaabkitaab.model.User;
 import com.google.gson.GsonBuilder;
 
 
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,24 +123,19 @@ public class LoginActivity extends AppCompatActivity {
 
         Log.v("hel", username.concat(password));
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(PostApi.root)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        PostApi postApi = retrofit.create(PostApi.class);
-
         Login login = new Login(username, password);
-        Call<User> call = postApi.login(login);
+        Call<LoginReply> call = RetrofitClient.getInstance().getPostApi().login(login);
 
-        call.enqueue(new Callback<User>() {
+        call.enqueue(new Callback<LoginReply>() {
 
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<LoginReply> call, Response<LoginReply> response) {
                 Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         String token = response.body().getToken();
+                        Log.v("hey baby:",token);
+
 
 //                        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
 //                        SharedPreferences.Editor prefLoginEdit = preferences.edit();
@@ -154,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<LoginReply> call, Throwable t) {
                 //showErrorDialog();
 //                Toast.makeText(getActivity(), "error :(", Toast.LENGTH_SHORT).show();
             }

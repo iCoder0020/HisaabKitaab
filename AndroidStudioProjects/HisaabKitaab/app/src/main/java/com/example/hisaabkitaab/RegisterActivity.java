@@ -18,6 +18,9 @@ import com.example.hisaabkitaab.model.User;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -133,27 +136,24 @@ public class RegisterActivity extends AppCompatActivity {
             final String password)
     {
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(PostApi.root)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
+        User userModel = new User(1, email, username, password, "randomise");
+        Call<ResponseBody> call = RetrofitClient.getInstance().getPostApi().registrationUser(userModel);
 
-        PostApi postApi = retrofit.create(PostApi.class);
-
-        Register register = new Register(name, email, username, password);
-        Call<PostReply> call = postApi.registrationUser(register);
-
-        call.enqueue(new Callback<PostReply>() {
+        call.enqueue(new Callback<ResponseBody>() {
 
             @Override
-            public void onResponse(Call<PostReply> call, Response<PostReply> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Log.w("Response from server: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
-                Log.w("hey baby", response.message());
+
 
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         //String token = response.body().getToken();
-
+                        try {
+                            Log.w("hey baby", response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 //                        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
 //                        SharedPreferences.Editor prefLoginEdit = preferences.edit();
 //                        prefLoginEdit.putBoolean("loggedin", true);
@@ -164,13 +164,18 @@ public class RegisterActivity extends AppCompatActivity {
                         //performLogin();
                     }
                 } else {
+                    try {
+                        Log.w("hey baby", response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     showErrorDialog("Error received from Server");
 //                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<PostReply> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.v("see this: ", t.getMessage());
                 showErrorDialog("Cannot Connect to Server");
 //                Toast.makeText(getActivity(), "error :(", Toast.LENGTH_SHORT).show();
