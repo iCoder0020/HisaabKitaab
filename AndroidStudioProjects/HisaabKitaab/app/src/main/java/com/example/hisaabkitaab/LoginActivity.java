@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        preferences = new AppPreferences(this);
+        preferences = new AppPreferences(this);
 //        if (preferences.isLoggedIn()) {
 //            startMainActivity();
 //            finish();
@@ -135,15 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         String token = response.body().getToken();
                         Log.v("hey baby:",token);
-
-
-//                        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-//                        SharedPreferences.Editor prefLoginEdit = preferences.edit();
-//                        prefLoginEdit.putBoolean("loggedin", true);
-//                        prefLoginEdit.putString("token", token);
-//                        prefLoginEdit.commit();
-
-//                        Toast.makeText(getContext(), token, Toast.LENGTH_SHORT).show();
+                        preferences.setToken(token);
                         performLogin();
                     }
                 } else {

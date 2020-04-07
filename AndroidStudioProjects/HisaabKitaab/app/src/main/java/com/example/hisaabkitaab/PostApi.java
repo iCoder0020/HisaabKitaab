@@ -11,6 +11,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface PostApi {
 
@@ -21,6 +22,10 @@ public interface PostApi {
     //Register
     @POST("/auth/users/")
     Call<ResponseBody> registrationUser(@Body User userModel);
+
+    //Update profile for details
+    @PUT("/api/accounts/all-profiles/")
+    Call<ResponseBody> updateProfile(@Body User userModel);
 
 //    @GET("post/list/")
 //    Call<List<PostModel>> getListPost();

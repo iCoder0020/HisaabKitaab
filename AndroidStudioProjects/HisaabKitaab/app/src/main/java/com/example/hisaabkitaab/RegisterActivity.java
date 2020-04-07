@@ -2,10 +2,14 @@ package com.example.hisaabkitaab;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -38,6 +42,9 @@ public class RegisterActivity extends AppCompatActivity {
     private Button loginButton;
     private Button registerButton;
 
+    private ProgressBar progressBar;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +60,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
+
+        progressBar = findViewById(R.id.progressBar);
 
         loginButton.setOnClickListener(v -> onLoginClicked());
         registerButton.setOnClickListener(v -> onRegisterClicked());
@@ -81,6 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void onLoginClicked() {
         startLoginActivity();
+        finish();
     }
 
     private void onRegisterClicked() {
@@ -148,28 +158,26 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+
                         //String token = response.body().getToken();
                         try {
                             Log.w("hey baby", response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-//                        SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-//                        SharedPreferences.Editor prefLoginEdit = preferences.edit();
-//                        prefLoginEdit.putBoolean("loggedin", true);
-//                        prefLoginEdit.putString("token", token);
-//                        prefLoginEdit.commit();
 
-//                        Toast.makeText(getContext(), token, Toast.LENGTH_SHORT).show();
-                        //performLogin();
+                        showSuccessDialog(username);
+                        performRegister();
                     }
                 } else {
                     try {
-                        Log.w("hey baby", response.errorBody().string());
+                        String error = response.errorBody().string();
+                        Log.w("hey baby", error);
+                        showErrorDialog(error);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    showErrorDialog("Error received from Server");
+//                    showErrorDialog("Error received from Server");
 //                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -188,6 +196,25 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void performRegister(){
+
+        textNameLayout.setEnabled(false);
+        textEmailLayout.setEnabled(false);
+        textRepeatPasswordLayout.setEnabled(false);
+        textPasswordLayout.setEnabled(false);
+        textUsernameLayout.setEnabled(false);
+
+        registerButton.setVisibility(View.INVISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            startLoginActivity();
+            finish();
+        }, 2000);
+    }
+
     private void showErrorDialog(String error) {
         new AlertDialog.Builder(this)
                 .setTitle("Register Error")
@@ -196,8 +223,17 @@ public class RegisterActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void showSuccessDialog(String username){
+        new AlertDialog.Builder(this)
+                .setTitle("Account Created")
+                .setMessage("Your account with the username "
+                        .concat(username)
+                        .concat(" has been successfully created!"))
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     private void startLoginActivity() {
-        finish();
         Intent intent = new Intent(this, com.example.hisaabkitaab.LoginActivity.class);
         startActivity(intent);
     }

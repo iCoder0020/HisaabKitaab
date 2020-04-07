@@ -18,12 +18,12 @@ public class StartupActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        preferences = new AppPreferences(this);
-//        if (preferences.isLoggedIn()) {
-//            startMainActivity();
-//            finish();
-//            return;
-//        }
+        preferences = new AppPreferences(this);
+        if (preferences.isLoggedIn()) {
+            startMainActivity();
+            finish();
+            return;
+        }
 
         setContentView(R.layout.activity_startup);
 
