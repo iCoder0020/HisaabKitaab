@@ -2,16 +2,18 @@ from api.serializers import *
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 import json
-#from rest_framework.permissions import IsAuthenticated 
+# from rest_framework.permissions import IsAuthenticated
 
 #############
-from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
+from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView, )
 from rest_framework.permissions import IsAuthenticated
 from .models import Profile
 from .permissions import IsOwnerProfileOrReadOnly
 from .serializers import ProfileSerializer
+
 
 class ProfileListCreateView(ListCreateAPIView):
     queryset = Profile.objects.all()
@@ -19,7 +21,7 @@ class ProfileListCreateView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        user=self.request.user
+        user = self.request.user
         serializer.save(user=user)
 
 
@@ -61,16 +63,10 @@ class AccountView(APIView):
 
     @staticmethod
     def post(request):
-        print("Raw Data: ", request.body)
 
         action = request.data.get('type')
 
         if action == 'create':
-            # serializer = UserSerializer(data=request.data)
-            # if serializer.is_valid():
-            #     serializer.save()
-            #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-            # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
             username = request.data.get('username')
             password = request.data.get('password')
@@ -81,14 +77,12 @@ class AccountView(APIView):
             email_already_used = User.objects.filter(email=email).exists()
             if email_already_used:
                 print("email already in use")
-                return Response({'code': 400, 'message': "email already is use"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': "email already is use"}, status=status.HTTP_400_BAD_REQUEST)
 
             username_already_used = User.objects.filter(username=username).exists()
             if username_already_used:
                 print("username already in use")
-                return Response({'code': 400, 'message': "username already is use"}, status=status.HTTP_400_BAD_REQUEST)
-
-            # ensure email is in goa.bits-pilani.ac.in domain
+                return Response({'message': "username already is use"}, status=status.HTTP_400_BAD_REQUEST)
 
             user = User.objects.create_user(username=username, password=password, email=email)
 
@@ -96,8 +90,8 @@ class AccountView(APIView):
             profile.save()
 
             serializer = UserSerializer(user)
-            
-            return Response({'status':'account created'}, status=status.HTTP_201_CREATED)
+
+            return Response({'status': 'account created'}, status=status.HTTP_201_CREATED)
 
         elif action == 'delete':
             username = request.data.get('username')
@@ -225,14 +219,13 @@ class UserView(APIView):
 
     @staticmethod
     def get(request):
-        action = request.data.get('type')   
-
+        action = request.data.get('type')
         if action == 'username':
             userid = request.data.get('userid')
 
             user = User.objects.get(pk=userid)
-
-            return Response(str(user))
+            response = json.dumps(str(user))
+            return Response(response)
 
         elif action == 'userid':
             username = request.data.get('username')
@@ -241,9 +234,25 @@ class UserView(APIView):
 
             if user_exists:
                 user = User.objects.get(username=username)
-                return Response(user.id)
+                response = {'userid': user.id}
+                return JsonResponse(response)
 
-            return Response('invalid username')
+            return JsonResponse('invalid username')
+
+        elif action == 'all':
+            userid = request.data.get('userid')
+
+            user_exists = User.objects.filter(pk=userid).exists()
+
+            if user_exists:
+                user = User.objects.get(pk=userid)
+                profile = Profile.objects.get(user=user)
+                response = {'username': user.username, 'name': profile.name, 'email': user.email,
+                            'phone_number': profile.phone_number, 'category': profile.category}
+                return JsonResponse(response, status=status.HTTP_200_OK)
+
+            response = {'error': "invalid userid"}
+            return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
 
         else:
             return Response('invalid get in UserView')
