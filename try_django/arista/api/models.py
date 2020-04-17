@@ -85,3 +85,16 @@ class Transaction(models.Model):
 
     def __str__(self):
         return str(self.payment) + ": " + str(self.borrower) + "->" + str(self.lender)
+
+
+class Payment_User(models.Model):
+    description = models.CharField(max_length=128)
+    total_amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    lended_amount = models.FloatField()
+    lender = models.ForeignKey(User, related_name="LenderNew", on_delete=models.PROTECT)
+    borrower = models.ForeignKey(User, related_name="BorrowerNew", on_delete=models.PROTECT)
+    status = models.CharField(max_length=1)
+
+    def __str__(self):
+        return self.description + ": " + str(self.borrower) + "->" + str(self.lender) + "[" + self.status + "]"
