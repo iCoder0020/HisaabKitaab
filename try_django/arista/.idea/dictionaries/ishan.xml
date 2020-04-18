@@ -2,12 +2,17 @@
   <dictionary name="ishan">
     <words>
       <w>addmember</w>
+      <w>borrowerid</w>
       <w>deletemember</w>
+      <w>friendid</w>
       <w>friendlist</w>
       <w>groupid</w>
       <w>grouplist</w>
       <w>groupmembers</w>
       <w>groupname</w>
+      <w>individualid</w>
+      <w>lended</w>
+      <w>lenderid</w>
       <w>paymentid</w>
       <w>userid</w>
     </words>

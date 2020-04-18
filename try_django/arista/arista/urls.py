@@ -31,5 +31,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     #path('auth/', include('djoser.urls.authtoken')),
 #path to our account's app endpoints
-    path("api/accounts/",include("api.urls"))
+    path("api/accounts/",include("api.urls")),
+    path('payment_user/', Payment_UserView.as_view())
 ]
