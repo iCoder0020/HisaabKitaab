@@ -23,8 +23,11 @@ import com.hisaabkitaab.model.LoginReply;
 import com.google.android.material.textfield.TextInputLayout;
 
 import com.hisaabkitaab.model.Login;
+import com.hisaabkitaab.model.ToGetUserID;
+import com.hisaabkitaab.model.Token;
 import com.hisaabkitaab.model.User;
 import com.google.gson.GsonBuilder;
+import com.hisaabkitaab.model.UserReply;
 
 
 import java.io.IOException;
@@ -134,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         String token = response.body().getToken();
+                        preferences.setUserName(username);
                         Log.v("hey baby:",token);
                         preferences.setToken(token);
                         performLogin();
@@ -158,7 +162,39 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void performLogin() {
-        // preferences.setLoggedIn(true);
+
+
+        //// TODO: GET UserID
+//        ToGetUserID toGetUserIDobj = new ToGetUserID(preferences.getUserName());
+//        Call<UserReply> call = RetrofitClient.getInstance().getPostApi().getUserID("userid", preferences.getUserName());
+//
+//        call.enqueue(new Callback<UserReply>() {
+//
+//            @Override
+//            public void onResponse(Call<UserReply> call, Response<UserReply> response) {
+//                Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
+//                if (response.isSuccessful()) {
+//                    if (response.body() != null) {
+//                        UserReply userReplyModel = response.body();
+//                        int id = userReplyModel.getId();
+//                        preferences.setId(id);
+//                        Log.v("hey baby:",Integer.toString(id));
+//                        performLogin();
+//                    }
+//                } else {
+//                    showErrorDialog();
+////                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UserReply> call, Throwable t) {
+//                //showErrorDialog();
+////                Toast.makeText(getActivity(), "error :(", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        preferences.setLoggedIn(true);
 
         textPasswordLayout.setEnabled(false);
         textUsernameLayout.setEnabled(false);

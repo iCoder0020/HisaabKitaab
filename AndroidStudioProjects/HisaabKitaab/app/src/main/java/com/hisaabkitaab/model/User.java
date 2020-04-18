@@ -7,7 +7,6 @@ public class User {
     private String password;
     private String auth_token;
 
-
     public User(int id,
                 String email,
                 String username,

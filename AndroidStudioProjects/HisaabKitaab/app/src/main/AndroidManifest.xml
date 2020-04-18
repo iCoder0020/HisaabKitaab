@@ -24,6 +24,10 @@
             android:name=".MainActivity">
         </activity>
         <activity
+            android:name=".PersonActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
             android:name=".StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

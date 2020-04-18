@@ -3,15 +3,21 @@ package com.hisaabkitaab;
 import com.hisaabkitaab.model.Login;
 import com.hisaabkitaab.model.LoginReply;
 import com.hisaabkitaab.model.PostReply;
+import com.hisaabkitaab.model.Token;
 import com.hisaabkitaab.model.User;
 import com.hisaabkitaab.model.Register;
+import com.hisaabkitaab.model.UserReply;
 
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface PostApi {
 
@@ -26,6 +32,15 @@ public interface PostApi {
     //Update profile for details
     @PUT("/api/accounts/all-profiles/")
     Call<ResponseBody> updateProfile(@Body User userModel);
+
+
+    //Get User Details
+    @GET("/auth/users/me")
+    Call<UserReply> getUser(@Body Token tokenModel);
+
+    @FormUrlEncoded
+    @POST("/user")
+    Call<UserReply> getUserID(@Field("type") String type, @Field("username") String username);
 
 //    @GET("post/list/")
 //    Call<List<PostModel>> getListPost();

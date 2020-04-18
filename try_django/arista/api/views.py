@@ -218,7 +218,7 @@ class GroupView(APIView):
 class UserView(APIView):
 
     @staticmethod
-    def get(request):
+    def post(request):
         action = request.data.get('type')
         if action == 'username':
             userid = request.data.get('userid')
@@ -257,9 +257,9 @@ class UserView(APIView):
         else:
             return Response('invalid get in UserView')
 
-    @staticmethod
-    def post(request):
-        pass
+    # @staticmethod
+    # def post(request):
+    #     pass
 
 
 class FriendView(APIView):
