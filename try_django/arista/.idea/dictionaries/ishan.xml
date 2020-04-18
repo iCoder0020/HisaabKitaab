@@ -3,6 +3,8 @@
     <words>
       <w>addmember</w>
       <w>borrowerid</w>
+      <w>borroweridx</w>
+      <w>cand</w>
       <w>deletemember</w>
       <w>friendid</w>
       <w>friendlist</w>
@@ -13,6 +15,7 @@
       <w>individualid</w>
       <w>lended</w>
       <w>lenderid</w>
+      <w>lenderidx</w>
       <w>paymentid</w>
       <w>userid</w>
     </words>

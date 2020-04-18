@@ -62,7 +62,7 @@ class Payment_Whole(models.Model):
     description = models.CharField(max_length=128)
 
     def __str__(self):
-        return self.description
+        return str(self.group) + "->" + self.description
 
 
 class Payment_Individual(models.Model):
