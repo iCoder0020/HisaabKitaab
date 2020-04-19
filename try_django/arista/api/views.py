@@ -82,6 +82,7 @@ class AccountView(APIView):
             email = request.data.get('email')
             name = request.data.get('name')
             category = request.data.get('category')
+            phone_number = request.data.get('phone_number')
 
             email_already_used = User.objects.filter(email=email).exists()
             if email_already_used:
@@ -93,7 +94,7 @@ class AccountView(APIView):
 
             user = User.objects.create_user(username=username, password=password, email=email)
 
-            profile = Profile(user=user, name=name, category=category)
+            profile = Profile(user=user, name=name, phone_number=phone_number, category=category)
             profile.save()
 
             return JsonResponse(ack("account created"), status=status.HTTP_201_CREATED)
@@ -316,9 +317,9 @@ class UserView(APIView):
         else:
             return JsonResponse(error("invalid get in UserView"), status=status.HTTP_400_BAD_REQUEST)
 
-    # @staticmethod
-    # def post(request):
-    #     pass
+    @staticmethod
+    def post(request):
+        pass
 
 
 class FriendView(APIView):
@@ -399,7 +400,7 @@ class PaymentView(APIView):
     def get(request):
         action = request.data.get('type')
 
-        if action == 'create_transactions':
+        if action == 'get_transactions':
             paymentid = request.data.get('paymentid')
 
             payment_exists = Payment_Whole.objects.filter(pk=paymentid).exists()
@@ -407,7 +408,14 @@ class PaymentView(APIView):
             if payment_exists is False:
                 return JsonResponse(error("invalid paymentid"), status=status.HTTP_400_BAD_REQUEST)
 
-            # TODO
+            payment = Payment_Whole.objects.get(pk=paymentid)
+
+            transaction = Transaction.objects.filter(payment=payment)
+
+            serializer = TransactionSerializer(transaction, many=True)
+
+            response = {'transactions': serializer.data}
+            return JsonResponse(response, status=status.HTTP_200_OK)
 
         else:
             return JsonResponse(error("invalid get in PaymentView"), status=status.HTTP_400_BAD_REQUEST)
@@ -426,36 +434,42 @@ class PaymentView(APIView):
                 return JsonResponse(error("invalid groupid"), status=status.HTTP_400_BAD_REQUEST)
 
             group = Group.objects.get(pk=groupid)
+            group_users = Group_User.objects.filter(group=group)
+            users = [User.objects.get(pk=i.user.id) for i in group_users]
+            group_size = len(users)
 
             payment_whole = Payment_Whole(group=group, amount=0, description=description)
-
             payment_whole.save()
+
+            for i in range(group_size):
+                payment_individual = Payment_Individual(payment=payment_whole, lender=users[i], amount=0)
+                payment_individual.save()
 
             return JsonResponse(ack("Created payment_whole: " + str(payment_whole)), status=status.HTTP_200_OK)
 
-        elif action == 'add':
-            userid = request.data.get('userid')
-            paymentid = request.data.get('paymentid')
-            amount = request.data.get('amount')
-
-            user_exists = User.objects.filter(pk=userid).exists()
-            payment_exists = Payment_Whole.objects.filter(pk=paymentid).exists()
-
-            if user_exists is False:
-                return JsonResponse(error("invalid userid"), status=status.HTTP_400_BAD_REQUEST)
-            if payment_exists is False:
-                return JsonResponse(error("invalid paymentid"), status=status.HTTP_400_BAD_REQUEST)
-
-            user = User.objects.get(pk=userid)
-            payment_whole = Payment_Whole.objects.get(pk=paymentid)
-            payment_whole.amount += int(amount)
-
-            payment_individual = Payment_Individual(payment=payment_whole, lender=user, amount=amount)
-
-            payment_individual.save()
-            payment_whole.save()
-
-            return JsonResponse(ack("Added payment_individual: " + str(payment_individual)), status=status.HTTP_200_OK)
+        # elif action == 'add':
+        #     userid = request.data.get('userid')
+        #     paymentid = request.data.get('paymentid')
+        #     amount = request.data.get('amount')
+        #
+        #     user_exists = User.objects.filter(pk=userid).exists()
+        #     payment_exists = Payment_Whole.objects.filter(pk=paymentid).exists()
+        #
+        #     if user_exists is False:
+        #         return JsonResponse(error("invalid userid"), status=status.HTTP_400_BAD_REQUEST)
+        #     if payment_exists is False:
+        #         return JsonResponse(error("invalid paymentid"), status=status.HTTP_400_BAD_REQUEST)
+        #
+        #     user = User.objects.get(pk=userid)
+        #     payment_whole = Payment_Whole.objects.get(pk=paymentid)
+        #     payment_whole.amount += int(amount)
+        #
+        #     payment_individual = Payment_Individual(payment=payment_whole, lender=user, amount=amount)
+        #
+        #     payment_individual.save()
+        #     payment_whole.save()
+        #
+        #     return JsonResponse(ack("Added payment_individual: " + str(payment_individual)), status=status.HTTP_200_OK)
 
         elif action == 'update_description':
             paymentid = request.data.get('paymentid')
@@ -496,6 +510,49 @@ class PaymentView(APIView):
 
             return JsonResponse(ack("Updated payment_individual: " + str(payment_individual)),
                                 status=status.HTTP_200_OK)
+
+        elif action == 'create_transactions':
+            paymentid = request.data.get('paymentid')
+
+            payment_exists = Payment_Whole.objects.filter(pk=paymentid).exists()
+
+            if payment_exists is False:
+                return JsonResponse(error("invalid paymentid"), status=status.HTTP_400_BAD_REQUEST)
+
+            payment = Payment_Whole.objects.get(pk=paymentid)
+            group = Group.objects.get(pk=payment.group.id)
+            group_users = Group_User.objects.filter(group=group)
+            users = [User.objects.get(pk=i.user.id) for i in group_users]
+            group_size = len(users)
+            payment_individual_query = Payment_Individual.objects.filter(payment=paymentid)
+            equal_share = payment.amount / group_size
+            to_pay = [equal_share for i in range(group_size)]
+            paid = [payment_individual_query.filter(lender=u)[0].amount for u in users]
+            will_get = [paid[i] - to_pay[i] for i in range(group_size)]
+
+            prev_transactions = Transaction.objects.filter(payment=paymentid)
+            for transaction in prev_transactions:
+                transaction.delete()
+            print(prev_transactions)
+            while True:
+                lenderidx = will_get.index(max(will_get))
+                if will_get[lenderidx] == 0:
+                    break
+                while will_get[lenderidx] != 0:
+                    borroweridx = will_get.index(min(filter(lambda i: i <= 0, will_get)))
+                    if will_get[borroweridx] == 0:
+                        will_get[lenderidx] = 0
+                        break
+                    amount = min(will_get[lenderidx], abs(will_get[borroweridx]))
+                    will_get[lenderidx] -= amount
+                    will_get[borroweridx] += amount
+                    # print(str(users[lenderidx]) + " will get " + str(amount) + " from " + str(users[borroweridx]))
+                    lender = users[lenderidx]
+                    borrower = users[borroweridx]
+                    transaction = Transaction(payment=payment, lender=lender, borrower=borrower, amount=amount)
+                    transaction.save()
+
+            return JsonResponse(ack("Created transactions for payment: " + str(payment)), status=status.HTTP_200_OK)
 
         elif action == 'delete':
             userid = request.data.get('userid')
