@@ -75,4 +75,10 @@ public class AppPreferences {
         return preferences.getInt(KEY_USER_ID, 0);
     }
 
+    public void logout() {
+        SharedPreferences.Editor preferencesEditor = preferences.edit();
+        preferencesEditor.clear();
+        preferencesEditor.apply();
+    }
+
 }
