@@ -7,13 +7,13 @@ public class PaymentUserReply {
 
     @SerializedName("description")
     @Expose
-    private string description;
+    private String description;
     @SerializedName("total_amount")
     @Expose
     private float total_amount;
     @SerializedName("timestamp")
     @Expose
-    private string timestamp;
+    private String timestamp;
     @SerializedName("lended_amount")
     @Expose
     private float lended_amount;
@@ -28,7 +28,7 @@ public class PaymentUserReply {
     private char status;
 
 
-    public string getDescription()
+    public String getDescription()
     {
         return this.description;
     }
@@ -38,7 +38,7 @@ public class PaymentUserReply {
         return this.total_amount;
     }
 
-    public string getTimestamp()
+    public String getTimestamp()
     {
         return this.timestamp;
     }

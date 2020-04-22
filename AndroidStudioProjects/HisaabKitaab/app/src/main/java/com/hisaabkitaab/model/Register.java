@@ -18,6 +18,6 @@ public class Register {
         this.username = username;
         this.password = password;
         this.type = "create";
-        this.category = "C";
+        this.category = "S";
     }
 }

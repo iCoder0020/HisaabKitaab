@@ -2,10 +2,9 @@ package com.hisaabkitaab;
 
 import com.hisaabkitaab.model.Login;
 import com.hisaabkitaab.model.LoginReply;
-import com.hisaabkitaab.model.PostReply;
+import com.hisaabkitaab.model.PaymentUserReply;
 import com.hisaabkitaab.model.Token;
 import com.hisaabkitaab.model.User;
-import com.hisaabkitaab.model.Register;
 import com.hisaabkitaab.model.UserReply;
 
 
@@ -17,7 +16,6 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
-import retrofit2.http.Path;
 
 public interface PostApi {
 
@@ -41,6 +39,9 @@ public interface PostApi {
     @FormUrlEncoded
     @POST("/user")
     Call<UserReply> getUserID(@Field("type") String type, @Field("username") String username);
+
+    @GET("/payment_user/")
+    Call<PaymentUserReply> getPaymentUser(@Field("type") String type, @Field("userid") int userid);
 
 //    @GET("post/list/")
 //    Call<List<PostModel>> getListPost();

@@ -25,7 +25,9 @@ SECRET_KEY = '#!-#hov)ld9x20(w$y&(nsbl4^bo$0za(ja_1j2$w=+-*58)e4'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'herokudjangoapp.herokuapp.com'
+    'aristaheroku.herokuapp.com',
+    '127.0.0.1',
+    '0.0.0.0',
 ]
 
 # Application definition
@@ -39,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
-    # 'rest_framework.authtoken', #legacy will not use anymore
-    'rest_framework_simplejwt',  # rest API implementation library for django
-    'djoser',  # third party package for user registration and authentication endpoints
+    'rest_framework.authtoken', #legacy will not use anymore
+    # 'rest_framework_simplejwt',  # rest API implementation library for django
+    # 'djoser',  # third party package for user registration and authentication endpoints
 ]
 
 MIDDLEWARE = [
@@ -106,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 
@@ -126,7 +128,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, '../../venv/lib/python3.6/site-packages/django/contrib/staticfiles/')
 STATIC_URL = '/static/'
 
 # Extra lookup directories for collectstatic to find static files
@@ -135,7 +137,7 @@ STATICFILES_DIRS = (
 )
 
 #  Add configuration for static files storage using whitenoise
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 import dj_database_url
 
