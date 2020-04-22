@@ -1,0 +1,1 @@
+web: gunicorn arista.wsgi --log-file -

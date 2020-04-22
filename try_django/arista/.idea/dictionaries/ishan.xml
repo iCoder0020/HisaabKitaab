@@ -5,6 +5,7 @@
       <w>borrowerid</w>
       <w>borroweridx</w>
       <w>cand</w>
+      <w>collectstatic</w>
       <w>deletemember</w>
       <w>friendid</w>
       <w>friendlist</w>
@@ -18,6 +19,7 @@
       <w>lenderidx</w>
       <w>paymentid</w>
       <w>userid</w>
+      <w>whitenoise</w>
     </words>
   </dictionary>
 </component>
