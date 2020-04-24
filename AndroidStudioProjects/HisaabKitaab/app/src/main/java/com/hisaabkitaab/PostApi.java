@@ -1,8 +1,13 @@
 package com.hisaabkitaab;
 
+import com.hisaabkitaab.model.AddPayment;
+import com.hisaabkitaab.model.FriendIDList;
 import com.hisaabkitaab.model.Login;
 import com.hisaabkitaab.model.LoginReply;
+import com.hisaabkitaab.model.PaymentList;
 import com.hisaabkitaab.model.PostReply;
+import com.hisaabkitaab.model.SendQuery;
+import com.hisaabkitaab.model.ToGetUserID;
 import com.hisaabkitaab.model.Token;
 import com.hisaabkitaab.model.User;
 import com.hisaabkitaab.model.Register;
@@ -38,9 +43,22 @@ public interface PostApi {
     @GET("/auth/users/me")
     Call<UserReply> getUser(@Body Token tokenModel);
 
-    @FormUrlEncoded
-    @POST("/user")
-    Call<UserReply> getUserID(@Field("type") String type, @Field("username") String username);
+    // Get UserID from UserName
+    @POST("/user/")
+    Call<UserReply> getUserID(@Body ToGetUserID model);
+
+    // Get all friends ID
+    @POST("/friend/")
+    Call<FriendIDList> getFriendIDList(@Body SendQuery model);
+
+    // Create new Payment
+    @POST("/payment_user/")
+    Call<ResponseBody> newPayment(@Body AddPayment model);
+
+    // Create new Payment
+    @POST("/payment_user/")
+    Call<PaymentList> getPaymentList(@Body SendQuery model);
+
 
 //    @GET("post/list/")
 //    Call<List<PostModel>> getListPost();
