@@ -18,6 +18,7 @@
       <w>lenderid</w>
       <w>lenderidx</w>
       <w>paymentid</w>
+      <w>uname</w>
       <w>userid</w>
       <w>whitenoise</w>
     </words>

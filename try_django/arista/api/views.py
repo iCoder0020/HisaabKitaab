@@ -21,6 +21,10 @@ class AccountView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
 
         if action == 'login':
@@ -42,15 +46,7 @@ class AccountView(APIView):
             logout(request)
             return JsonResponse(ack("Successful Logout"), status=status.HTTP_200_OK)
 
-        else:
-            return JsonResponse(error("invalid get in AccountView"), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-
-        action = request.data.get('type')
-
-        if action == 'create':
+        elif action == 'create':
 
             username = request.data.get('username')
             password = request.data.get('password')
@@ -90,6 +86,10 @@ class GroupView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
 
         if action == 'groupname':
@@ -157,14 +157,7 @@ class GroupView(APIView):
 
             return JsonResponse(users)
 
-        else:
-            return JsonResponse(error('invalid get in GroupView'), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        action = request.data.get('type')
-
-        if action == 'create':
+        elif action == 'create':
             userid = request.data.get('userid')
             groupname = request.data.get('groupname')
 
@@ -250,6 +243,10 @@ class UserView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
         if action == 'username':
             userid = request.data.get('userid')
@@ -290,17 +287,17 @@ class UserView(APIView):
             return JsonResponse(error("invalid userid"), status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            return JsonResponse(error("invalid get in UserView"), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        pass
+            return JsonResponse(error("invalid post in UserView"), status=status.HTTP_400_BAD_REQUEST)
 
 
 class FriendView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
 
         if action == 'friendlist':
@@ -322,14 +319,7 @@ class FriendView(APIView):
             response = {'friends': friends}
             return JsonResponse(response, status=status.HTTP_200_OK)
 
-        else:
-            return JsonResponse(error('invalid get in FriendView'), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        action = request.data.get('type')
-
-        if action == 'add':
+        elif action == 'add':
             userid = request.data.get('userid')
             friendid = request.data.get('friendid')
 
@@ -373,6 +363,10 @@ class PaymentView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
 
         if action == 'get_transactions':
@@ -392,14 +386,7 @@ class PaymentView(APIView):
             response = {'transactions': serializer.data}
             return JsonResponse(response, status=status.HTTP_200_OK)
 
-        else:
-            return JsonResponse(error("invalid get in PaymentView"), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        action = request.data.get('type')
-
-        if action == 'create':
+        elif action == 'create':
             groupid = request.data.get('groupid')
             description = request.data.get('description')
 
@@ -560,9 +547,13 @@ class Payment_UserView(APIView):
 
     @staticmethod
     def get(request):
+        pass
+
+    @staticmethod
+    def post(request):
         action = request.data.get('type')
 
-        if action == 'borrower_debt':
+        if action == 'borrowed_from':
             userid = request.data.get('userid')
 
             user_exists = User.objects.filter(pk=userid).exists()
@@ -576,7 +567,36 @@ class Payment_UserView(APIView):
 
             serializer = Payment_UserSerializer(payment, many=True)
 
-            response = {'payments': serializer.data}
+            payments = serializer.data
+            for i in payments:
+                i['borrower_username'] = user.username
+                lenderid = i['lender']
+                i['lender_username'] = (User.objects.get(pk=lenderid)).username
+
+            response = {'payments': payments}
+            return JsonResponse(response, status=status.HTTP_200_OK)
+
+        elif action == 'lended_to':
+            userid = request.data.get('userid')
+
+            user_exists = User.objects.filter(pk=userid).exists()
+
+            if user_exists is False:
+                return JsonResponse(error("invalid userid"), status=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects.get(pk=userid)
+
+            payment = Payment_User.objects.filter(lender=user)
+
+            serializer = Payment_UserSerializer(payment, many=True)
+
+            payments = serializer.data
+            for i in payments:
+                i['lender_username'] = user.username
+                borrowerid = i['borrower']
+                i['borrower_username'] = (User.objects.get(pk=borrowerid)).username
+
+            response = {'payments': payments}
             return JsonResponse(response, status=status.HTTP_200_OK)
 
         elif action == 'pair':
@@ -601,14 +621,7 @@ class Payment_UserView(APIView):
             response = {'payments': serializer.data}
             return JsonResponse(response, status=status.HTTP_200_OK)
 
-        else:
-            return JsonResponse(error("invalid get in Payment_UserView"), status=status.HTTP_400_BAD_REQUEST)
-
-    @staticmethod
-    def post(request):
-        action = request.data.get('type')
-
-        if action == 'create':
+        elif action == 'create':
             description = request.data.get('description')
             total_amount = request.data.get('total_amount')
             lended_amount = request.data.get('lended_amount')
@@ -630,7 +643,9 @@ class Payment_UserView(APIView):
             payment_user = Payment_User(description=description, total_amount=total_amount, lended_amount=lended_amount,
                                         lender=lender, borrower=borrower, status=payment_status)
             payment_user.save()
-            return JsonResponse(ack("Created Payment_User: " + str(payment_user)), status=status.HTTP_200_OK)
+
+            response = {'paymentid': payment_user.id}
+            return JsonResponse(response, status=status.HTTP_200_OK)
 
         elif action == 'update':
             paymentid = request.data.get('paymentid')

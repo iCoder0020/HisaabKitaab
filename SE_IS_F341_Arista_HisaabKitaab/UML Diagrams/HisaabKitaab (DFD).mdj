@@ -39,6 +39,18 @@
 									"subViews": [
 										{
 											"_type": "LabelView",
+											"_id": "AAAAAAFxqDQOW1dYzjQ=",
+											"_parent": {
+												"$ref": "AAAAAAFwSd0dQoR56C4="
+											},
+											"font": "Arial;13;0",
+											"left": 162,
+											"top": 205,
+											"width": 87.4326171875,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
 											"_id": "AAAAAAFwUmpooaTCOqI=",
 											"_parent": {
 												"$ref": "AAAAAAFwSd0dQoR56C4="
@@ -131,6 +143,18 @@
 									"subViews": [
 										{
 											"_type": "LabelView",
+											"_id": "AAAAAAFxqDQOXFdhh+Q=",
+											"_parent": {
+												"$ref": "AAAAAAFwSd023YSFZ4I="
+											},
+											"font": "Arial;13;0",
+											"left": 138,
+											"top": 317,
+											"width": 87.4326171875,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
 											"_id": "AAAAAAFwUmpooqTKg2s=",
 											"_parent": {
 												"$ref": "AAAAAAFwSd023YSFZ4I="
@@ -220,6 +244,18 @@
 										"$ref": "AAAAAAFwSd1HBoSPcig="
 									},
 									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFxqDQOXFdqz0Y=",
+											"_parent": {
+												"$ref": "AAAAAAFwSd1HBoSR9wU="
+											},
+											"font": "Arial;13;0",
+											"left": 506,
+											"top": 245,
+											"width": 87.4326171875,
+											"height": 13
+										},
 										{
 											"_type": "LabelView",
 											"_id": "AAAAAAFwUmpoo6TSZNQ=",
@@ -829,6 +865,18 @@
 									"subViews": [
 										{
 											"_type": "LabelView",
+											"_id": "AAAAAAFxqDQOYFeeFCo=",
+											"_parent": {
+												"$ref": "AAAAAAFwSd9GU4Vd04E="
+											},
+											"font": "Arial;13;0",
+											"left": 82,
+											"top": 429,
+											"width": 87.4326171875,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
 											"_id": "AAAAAAFwUmpopaUFQdU=",
 											"_parent": {
 												"$ref": "AAAAAAFwSd9GU4Vd04E="
@@ -920,6 +968,18 @@
 										"$ref": "AAAAAAFwSd9h0YVnEV8="
 									},
 									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAFxqDQOYlen38o=",
+											"_parent": {
+												"$ref": "AAAAAAFwSd9h0YVp7go="
+											},
+											"font": "Arial;13;0",
+											"left": 722,
+											"top": 453,
+											"width": 87.4326171875,
+											"height": 13
+										},
 										{
 											"_type": "LabelView",
 											"_id": "AAAAAAFwUmpopqUNbHQ=",
