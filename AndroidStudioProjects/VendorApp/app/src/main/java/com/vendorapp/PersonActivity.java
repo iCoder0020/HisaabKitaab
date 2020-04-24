@@ -1,4 +1,4 @@
-package com.hisaabkitaab;
+package com.vendorapp;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;

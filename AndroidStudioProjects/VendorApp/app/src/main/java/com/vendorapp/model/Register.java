@@ -1,4 +1,4 @@
-package com.hisaabkitaab.model;
+package com.vendorapp.model;
 
 public class Register {
     private String name;
