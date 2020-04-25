@@ -1,7 +1,7 @@
 package com.hisaabkitaab.model;
 
-
 public class AddPayment {
+    private int paymentid;
     private double total_amount;
     private double lended_amount;
     private int borrowerid;
@@ -25,5 +25,16 @@ public class AddPayment {
         this.status = "P";
     }
 
+    public void setId(int id){
+        this.paymentid = id;
+    }
+
+    public void setType(String type){
+        this.type = type;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
+    }
 
 }

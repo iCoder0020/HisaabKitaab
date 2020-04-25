@@ -3,58 +3,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="180dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1.0"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textDescription"
+            android:id="@+id/textFriendDescription"
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            tools:text="Malakar" />
+            tools:text="Person 1" />
 
         <TextView
-            android:id="@+id/textTotal"
+            android:id="@+id/textFriendAmount"
             style="@style/TextAppearance.MaterialComponents.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
-            tools:text="You Paid: 400 Rupees" />
+            tools:text="Amount Due: +- 500 rupees" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.0"
-        android:orientation="vertical">
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="180dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1.0"-->
+    <!--        android:orientation="vertical">-->
 
-        <TextView
-            android:id="@+id/textDetail"
-            style="@style/TextAppearance.MaterialComponents.Body1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:textAlignment="textEnd"
-            tools:text="You Borrowed" />
+    <!--        <TextView-->
+    <!--            android:id="@+id/textPaymentDescription"-->
+    <!--            style="@style/TextAppearance.MaterialComponents.Headline6"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="16dp"-->
+    <!--            tools:text="Malakar" />-->
 
-        <TextView
-            android:id="@+id/textDate"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:layout_width="match_parent"
-            android:textAlignment="textEnd"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            tools:text="500" />
+    <!--        <TextView-->
+    <!--            android:id="@+id/textPaymentTotal"-->
+    <!--            style="@style/TextAppearance.MaterialComponents.Body1"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="16dp"-->
+    <!--            tools:text="Total Amount: 1000 Rupees" />-->
 
-    </LinearLayout>
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="80dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_weight="1.0"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/textPaymentDetail"-->
+    <!--            style="@style/TextAppearance.MaterialComponents.Body1"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="16dp"-->
+    <!--            android:textAlignment="textEnd"-->
+    <!--            tools:text="You Borrowed" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/textPaymentAmount"-->
+    <!--            style="@style/TextAppearance.MaterialComponents.Headline5"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:textAlignment="textEnd"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginRight="16dp"-->
+    <!--            tools:text="500" />-->
+
+    <!--    </LinearLayout>-->
 
 
 </LinearLayout>

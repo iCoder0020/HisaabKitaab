@@ -5,7 +5,7 @@ public class ToGetUserID {
     private String username;
 
     public ToGetUserID(String username){
-        this.type = "userID";
+        this.type = "userid";
         this.username = username;
     }
 }

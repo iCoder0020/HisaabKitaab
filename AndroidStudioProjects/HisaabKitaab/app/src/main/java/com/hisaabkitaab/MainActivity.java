@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private FriendList friends;
     private MainAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
+    private ProgressBar progressBar;
+
+    private static final String EXTRAS_PAYMENT = "EXTRAS_PAYMENT";
 
 
     @Override
@@ -64,10 +68,14 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+        progressBar = findViewById(R.id.progressBar);
 
-        toolbar.setNavigationOnClickListener(item -> {
-            finish();
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.logout) {
+                performLogout();
+            }
+            return false;
         });
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -77,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
-        adapter = new MainAdapter();
+        adapter = new MainAdapter(friend ->
+                PersonActivity.startPersonActivity(this, friend));
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -87,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(this::getNewRecords);
 
         getNewRecords();
-
 
     }
 
@@ -105,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         Log.w("PaymentToFriend","Entered");
 
         for(Payment p: payments.getPayments()){
+            if(p.getStatus().equals("D")){
+                continue;
+            }
             if(p.getBorrowerID() == preferences.getId()){
                 if(!friends.checkFriend(p.getLenderID())){
                     friends.addFriend(p.getLenderID(), p.getLender_username(), 0);
@@ -120,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.w("PaymentToFriend",Integer.toString(friends.getFriendList().size()));
+
+        progressBar.setVisibility(View.GONE);
 
         runOnUiThread(() -> {
             adapter.submitList(friends.getFriendList());
@@ -192,7 +205,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void newPayment() {
+        Payment p = new Payment(0.0,0.0,0,0,"","","");
         Intent intent = new Intent(this, com.hisaabkitaab.PaymentActivity.class);
+        intent.putExtra(EXTRAS_PAYMENT, p);
         startActivity(intent);
     }
 

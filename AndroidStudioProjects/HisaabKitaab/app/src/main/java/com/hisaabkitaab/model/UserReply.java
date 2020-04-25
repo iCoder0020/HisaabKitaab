@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserReply {
 
-    @SerializedName("id")
+    @SerializedName("userid")
     @Expose
-    private int id;
+    private int userid;
     @SerializedName("email")
     @Expose
     private String email;
@@ -26,11 +26,11 @@ public class UserReply {
 
 
     public int getId(){
-        return id;
+        return userid;
     }
 
     public void setId(int id){
-        this.id = id;
+        this.userid = id;
     }
 
     public String getEmail(){

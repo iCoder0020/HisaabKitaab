@@ -1,4 +1,4 @@
-package com.vendorapp.adapter;
+package com.hisaabkitaab.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.vendorapp.AppPreferences;
-import com.vendorapp.MainActivity;
-import com.vendorapp.R;
-import com.vendorapp.model.Payment;
+import com.hisaabkitaab.AppPreferences;
+import com.hisaabkitaab.MainActivity;
+import com.hisaabkitaab.R;
+import com.hisaabkitaab.model.Payment;
 
 public class PersonAdapter extends
         ListAdapter<Payment, PersonAdapter.PersonViewHolder> {
