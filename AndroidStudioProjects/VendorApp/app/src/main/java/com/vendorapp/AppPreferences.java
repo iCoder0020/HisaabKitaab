@@ -15,7 +15,7 @@ public class AppPreferences {
 
     private SharedPreferences preferences;
 
-    AppPreferences(Context context){
+    public AppPreferences(Context context){
         preferences = context.getSharedPreferences("hisaab-kitaab", Context.MODE_PRIVATE);
     }
 

@@ -1,8 +1,11 @@
 package com.vendorapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class Friend {
+public class Friend implements Parcelable {
 
     private int id;
     private String username;
@@ -42,6 +45,7 @@ public class Friend {
         else{
             this.amount += p.getLendedAmount();
         }
+        payments.addPayment(p);
     }
 
 
@@ -64,4 +68,37 @@ public class Friend {
 //    public int hashCode() {
 //        return Objects.hash(id, author, title, date, image, description, views, rating);
 //    }
+
+    protected Friend(Parcel in) {
+        id = in.readInt();
+        username = in.readString();
+        amount = in.readDouble();
+        payments = (PaymentList) in.readValue(PaymentList.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(username);
+        dest.writeDouble(amount);
+        dest.writeValue(payments);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Friend> CREATOR = new Parcelable.Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
+
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 }
