@@ -652,6 +652,8 @@ class Payment_UserView(APIView):
             description = request.data.get('description')
             total_amount = request.data.get('total_amount')
             lended_amount = request.data.get('lended_amount')
+            lenderid = request.data.get('lenderid')
+            borrowerid = request.data.get('borrowerid')
             payment_status = request.data.get('status')
 
             payment_exists = Payment_User.objects.filter(pk=paymentid).exists()
@@ -661,8 +663,19 @@ class Payment_UserView(APIView):
 
             payment_user = Payment_User.objects.get(pk=paymentid)
 
-            print(payment_user)
+            lender_exists = User.objects.filter(pk=lenderid).exists()
+            borrower_exists = User.objects.filter(pk=borrowerid).exists()
 
+            if lender_exists is False:
+                return JsonResponse(error("invalid lenderid"), status=status.HTTP_400_BAD_REQUEST)
+            if borrower_exists is False:
+                return JsonResponse(error("invalid borrowerid"), status=status.HTTP_400_BAD_REQUEST)
+
+            lender = User.objects.get(pk=lenderid)
+            borrower = User.objects.get(pk=borrowerid)
+
+            payment_user.lender = lender
+            payment_user.borrower = borrower
             payment_user.description = description
             payment_user.total_amount = total_amount
             payment_user.lended_amount = lended_amount
