@@ -90,6 +90,10 @@ public class LoginActivity extends AppCompatActivity {
             textPasswordLayout.setError("Password must not be empty");
         }
         if(checks) {
+            textPasswordLayout.setEnabled(false);
+            textUsernameLayout.setEnabled(false);
+            loginButton.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             Log.v("click login", "entring tryLogin");
             tryLogin(username, password);
         }
@@ -143,6 +147,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } else {
                     showErrorDialog();
+                    textPasswordLayout.setEnabled(true);
+                    textUsernameLayout.setEnabled(true);
+                    loginButton.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
 //                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -163,6 +171,7 @@ public class LoginActivity extends AppCompatActivity {
     private void performLogin() {
 
         ToGetUserID model = new ToGetUserID(preferences.getUserName());
+        Log.w("Username: ",preferences.getUserName());
 
         Call<UserReply> call = RetrofitClient.getInstance().getPostApi().getUserID(model);
 
@@ -171,6 +180,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserReply> call, Response<UserReply> response) {
                 Log.w("Login Read: ","Response Recieved!");
+                Log.w("Login Read: ",Integer.toString(response.code()));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         int id = 0;
@@ -180,11 +190,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.v("hey baby:",Integer.toString(id));
 
                         preferences.setLoggedIn(true);
-
-                        textPasswordLayout.setEnabled(false);
-                        textUsernameLayout.setEnabled(false);
-                        loginButton.setVisibility(View.INVISIBLE);
-                        progressBar.setVisibility(View.VISIBLE);
+//
+//                        textPasswordLayout.setEnabled(false);
+//                        textUsernameLayout.setEnabled(false);
+//                        loginButton.setVisibility(View.INVISIBLE);
+//                        progressBar.setVisibility(View.VISIBLE);
 
                         Handler handler = new Handler();
                         handler.postDelayed(() -> {
@@ -194,6 +204,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } else {
                     showErrorDialog();
+                    textPasswordLayout.setEnabled(true);
+                    textUsernameLayout.setEnabled(true);
+                    loginButton.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
 //                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
                 }
             }

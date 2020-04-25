@@ -26,7 +26,7 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="2"
-        tools:text="Arshdeep Singh"
+        android:text="Arshdeep Singh"
         tools:textColor="@android:color/white"
         tools:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +44,7 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="2"
-        tools:text="Amount to Get: 500"
+        android:text="Amount to Get: 500"
         tools:textStyle="bold"
         tools:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@+id/textName"
@@ -58,10 +58,10 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_icon2" />
+        app:srcCompat="@drawable/abc_vector_test" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewPerson"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -69,5 +69,32 @@
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageMain"
         tools:listitem="@layout/item_payment" />
+
+    <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+    <!--        android:id="@+id/refreshPerson"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintLeft_toRightOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/imageMain">-->
+    <!--        -->
+    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="60dp"
+        android:backgroundTint="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageMain"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

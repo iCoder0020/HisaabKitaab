@@ -68,12 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         progressBar = findViewById(R.id.progressBar);
-
-        toolbar.setNavigationOnClickListener(item -> {
-            finish();
-        });
 
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.logout) {

@@ -55,6 +55,11 @@ public interface PostApi {
     @POST("/payment_user/")
     Call<ResponseBody> newPayment(@Body AddPayment model);
 
+    // Update Payment
+    @POST("/payment_user/")
+    Call<ResponseBody> updatePayment(@Body AddPayment model);
+
+
     // Create new Payment
     @POST("/payment_user/")
     Call<PaymentList> getPaymentList(@Body SendQuery model);

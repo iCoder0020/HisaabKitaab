@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+//import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -53,11 +53,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         preferences = new AppPreferences(this);
-//        if (preferences.isLoggedIn()) {
-//            startMainActivity();
-//            finish();
-//            return;
-//        }
+        if (preferences.isLoggedIn()) {
+            startMainActivity();
+            finish();
+            return;
+        }
 
         setContentView(R.layout.activity_login);
 
@@ -90,6 +90,10 @@ public class LoginActivity extends AppCompatActivity {
             textPasswordLayout.setError("Password must not be empty");
         }
         if(checks) {
+            textPasswordLayout.setEnabled(false);
+            textUsernameLayout.setEnabled(false);
+            loginButton.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
             Log.v("click login", "entring tryLogin");
             tryLogin(username, password);
         }
@@ -128,12 +132,11 @@ public class LoginActivity extends AppCompatActivity {
 
         Login login = new Login(username, password);
         Call<LoginReply> call = RetrofitClient.getInstance().getPostApi().login(login);
-
+        Log.v("hel", username.concat(password));
         call.enqueue(new Callback<LoginReply>() {
-
             @Override
             public void onResponse(Call<LoginReply> call, Response<LoginReply> response) {
-                Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
+                //Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         String token = response.body().getToken();
@@ -144,6 +147,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } else {
                     showErrorDialog();
+                    textPasswordLayout.setEnabled(true);
+                    textUsernameLayout.setEnabled(true);
+                    loginButton.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
 //                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -163,49 +170,55 @@ public class LoginActivity extends AppCompatActivity {
 
     private void performLogin() {
 
+        ToGetUserID model = new ToGetUserID(preferences.getUserName());
+        Log.w("Username: ",preferences.getUserName());
 
-        //// TODO: GET UserID
-//        ToGetUserID toGetUserIDobj = new ToGetUserID(preferences.getUserName());
-//        Call<UserReply> call = RetrofitClient.getInstance().getPostApi().getUserID("userid", preferences.getUserName());
+        Call<UserReply> call = RetrofitClient.getInstance().getPostApi().getUserID(model);
+
+        call.enqueue(new Callback<UserReply>() {
+
+            @Override
+            public void onResponse(Call<UserReply> call, Response<UserReply> response) {
+                Log.w("Login Read: ","Response Recieved!");
+                Log.w("Login Read: ",Integer.toString(response.code()));
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        int id = 0;
+
+                        id = response.body().getId();
+                        preferences.setId(id);
+                        Log.v("hey baby:",Integer.toString(id));
+
+                        preferences.setLoggedIn(true);
 //
-//        call.enqueue(new Callback<UserReply>() {
-//
-//            @Override
-//            public void onResponse(Call<UserReply> call, Response<UserReply> response) {
-//                Log.w("Login Read: ",new GsonBuilder().setPrettyPrinting().create().toJson(response));
-//                if (response.isSuccessful()) {
-//                    if (response.body() != null) {
-//                        UserReply userReplyModel = response.body();
-//                        int id = userReplyModel.getId();
-//                        preferences.setId(id);
-//                        Log.v("hey baby:",Integer.toString(id));
-//                        performLogin();
-//                    }
-//                } else {
-//                    showErrorDialog();
-////                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<UserReply> call, Throwable t) {
-//                //showErrorDialog();
-////                Toast.makeText(getActivity(), "error :(", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+//                        textPasswordLayout.setEnabled(false);
+//                        textUsernameLayout.setEnabled(false);
+//                        loginButton.setVisibility(View.INVISIBLE);
+//                        progressBar.setVisibility(View.VISIBLE);
 
-        preferences.setLoggedIn(true);
+                        Handler handler = new Handler();
+                        handler.postDelayed(() -> {
+                            startMainActivity();
+                            finish();
+                        }, 2000);
+                    }
+                } else {
+                    showErrorDialog();
+                    textPasswordLayout.setEnabled(true);
+                    textUsernameLayout.setEnabled(true);
+                    loginButton.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+//                    Toast.makeText(getContext(), "login no correct :(", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        textPasswordLayout.setEnabled(false);
-        textUsernameLayout.setEnabled(false);
-        loginButton.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+            @Override
+            public void onFailure(Call<UserReply> call, Throwable t) {
+                //showErrorDialog();
+//                Toast.makeText(getActivity(), "error :(", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            startMainActivity();
-            finish();
-        }, 2000);
     }
 
     private void startMainActivity() {
